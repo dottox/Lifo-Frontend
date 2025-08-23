@@ -2,7 +2,25 @@ import './NavBar.css';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 function NavBar() {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, authenticatedFetch, LIFO_API_URL } = useAuth();
+
+  // Example of how to use authenticatedFetch for API calls that require auth
+  // This function demonstrates the pattern for other components
+  const _exampleApiCall = async () => {
+    try {
+      const response = await authenticatedFetch(`${LIFO_API_URL}/api/some-protected-endpoint`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('API data:', data);
+      } else {
+        console.error('API call failed');
+      }
+      // Note: If response is 401, authenticatedFetch automatically handles logout
+    } catch (error) {
+      console.error('Network error:', error);
+    }
+  };
 
   return (
     <nav className="nav-bar">
