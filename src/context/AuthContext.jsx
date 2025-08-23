@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch(`${LIFO_API_URL}/api/auth/verify`, {
+      const response = await fetch(`${LIFO_API_URL}/api/users/logged`, {
         method: 'GET',
         credentials: 'include', // Include cookies in the request
       });
