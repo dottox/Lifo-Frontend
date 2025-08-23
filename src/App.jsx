@@ -4,7 +4,15 @@ import Login from './components/login/Login.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 
 function AppContent() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <>
