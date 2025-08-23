@@ -8,36 +8,6 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const LIFO_API_URL = "https://lifo-api-fd466ebf5a8b.herokuapp.com";
 
-  // Check for existing auth on mount
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const response = await fetch(`${LIFO_API_URL}/api/users/logged`, {
-        method: 'GET',
-        credentials: 'include', // Include cookies in the request
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        setIsLoggedIn(true);
-      } else {
-        // If verification fails, ensure we're logged out
-        setIsLoggedIn(false);
-        setUser(null);
-      }
-    } catch {
-      // If there's an error, assume not logged in
-      setIsLoggedIn(false);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const login = async (username, password) => {
     try {
       const response = await fetch(`${LIFO_API_URL}/api/auth/signin`, {
