@@ -2,7 +2,7 @@
 import NavBar from './components/nav-bar/NavBar.jsx'
 import Login from './components/login/Login.jsx';
 import Trabajo from './components/trabajo/Trabajo.jsx';
-import { AuthProvider } from './context/AuthContextMock.jsx'; // Use mock for testing
+import { AuthProvider } from './context/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth.js';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
