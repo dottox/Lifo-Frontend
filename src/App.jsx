@@ -9,14 +9,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 function AppContent() {
   const { isLoggedIn, isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   return (
     <Router>
       <NavBar />
