@@ -8,20 +8,19 @@ export function AuthProvider({ children }) {
   const LIFO_API_URL = "https://lifo-api-fd466ebf5a8b.herokuapp.com";
 
   // On mount, check if the user is already logged in by seeing if they have a cookie.
-  useState(() => {
-    // Get the user cookie
-    useEffect(() => {
-      // Access cookies directly from document.cookie
-      const cookies = document.cookie;
-      const userCookie = cookies
-        .split('; ')
-        .find(row => row.startsWith('lifoCookie='));
-      if (userCookie) {
-        // You may want to parse the cookie value if it's JSON
-        setIsLoggedIn(true);
-      }
-      setIsLoading(false);
-    }, []);
+  useEffect(() => {
+    // Access cookies directly from document.cookie
+    const cookies = document.cookie;
+    // Optionally, parse cookies to check for a specific auth cookie
+    // Example: Check if a cookie named 'user' exists
+    const userCookie = cookies
+      .split('; ')
+      .find(row => row.startsWith('lifoCookie='));
+    if (userCookie) {
+      // You may want to parse the cookie value if it's JSON
+      setIsLoggedIn(true);
+    }
+    setIsLoggedIn(false);
   }, []);
 
   const login = async (username, password) => {

@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 function AppContent() {
   const { isLoggedIn, isLoading } = useAuth();
+  
 
   return (
     <Router>
