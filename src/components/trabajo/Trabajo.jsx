@@ -213,35 +213,6 @@ function Trabajo() {
     }
   };
 
-  const claimPayment = async () => {
-    setError('');
-    
-    try {
-      // Assuming there's a claim endpoint
-      const response = await authenticatedFetch(`${LIFO_API_URL}/api/jobs/claim`, {
-        method: 'POST',
-      });
-      
-      if (response.ok) {
-        // Clear working state after claiming
-        setIsWorking(false);
-        setWorkingUntil(null);
-        setRemainingTime(0);
-        setCurrentJobStatus(null);
-        deleteCookie('workingUntil');
-        
-        // Refresh the job status
-        await refreshJobsAndStatus();
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to claim payment');
-      }
-    } catch (err) {
-      setError('Network error occurred');
-      console.error('Error claiming payment:', err);
-    }
-  };
-
   // Helper function to format time
   const formatTime = (seconds) => {
     if (seconds <= 0) return '00:00:00';
@@ -294,7 +265,7 @@ function Trabajo() {
           ) : (
             <form onSubmit={(e) => {
               e.preventDefault();
-              claimPayment();
+              stopJob();
             }} className="job-form">
               <button type="submit" className="claim-payment-btn">
                 Claim Payment
