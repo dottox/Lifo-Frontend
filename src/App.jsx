@@ -4,10 +4,16 @@ import Login from './components/login/Login.jsx';
 import Trabajo from './components/trabajo/Trabajo.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { useAuth } from './hooks/useAuth.js';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function AppContent() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isLoading, checkAuthStatus } = useAuth();
+
+  // Call the AuthContext checkAuthStatus method to verify if the user is logged in
+  useEffect(() => {
+    checkAuthStatus()
+  }, []);
   
 
   return (
