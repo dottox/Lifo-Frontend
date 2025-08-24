@@ -81,24 +81,12 @@ function Trabajo() {
         if (jobsResponse.ok) {
           const responseData = await jobsResponse.json();
           
-          // Check if response has the expected format with current job status
-          if (responseData.message !== undefined && responseData.jobName !== undefined) {
-            // This is the current job status response
-            setCurrentJobStatus(responseData);
-            
-            if (responseData.workingUntil > 0) {
-              const now = Math.floor(Date.now() / 1000);
-              const untilTimestamp = responseData.workingUntil;
-              
-              if (untilTimestamp > now) {
-                setWorkingUntil(untilTimestamp);
-                setIsWorking(true);
-                setRemainingTime(untilTimestamp - now);
-                setCookie('workingUntil', untilTimestamp.toString());
-              }
-            }
+          // Handle new paginated jobs list format
+          if (responseData.content && Array.isArray(responseData.content)) {
+            // This is the new paginated jobs list response
+            setJobs(responseData.content);
           } else if (Array.isArray(responseData)) {
-            // This is the jobs list response (fallback for current implementation)
+            // Fallback for legacy array format
             setJobs(responseData);
           } else {
             setJobs([]);
@@ -128,31 +116,15 @@ function Trabajo() {
       if (jobsResponse.ok) {
         const responseData = await jobsResponse.json();
         
-        // Check if response has the expected format with current job status
-        if (responseData.message !== undefined && responseData.jobName !== undefined) {
-          // This is the current job status response
-          setCurrentJobStatus(responseData);
-          
-          if (responseData.workingUntil > 0) {
-            const now = Math.floor(Date.now() / 1000);
-            const untilTimestamp = responseData.workingUntil;
-            
-            if (untilTimestamp > now) {
-              setWorkingUntil(untilTimestamp);
-              setIsWorking(true);
-              setRemainingTime(untilTimestamp - now);
-              setCookie('workingUntil', untilTimestamp.toString());
-            }
-          } else {
-            // No active work
-            setIsWorking(false);
-            setWorkingUntil(null);
-            setRemainingTime(0);
-            deleteCookie('workingUntil');
-          }
+        // Handle new paginated jobs list format
+        if (responseData.content && Array.isArray(responseData.content)) {
+          // This is the new paginated jobs list response
+          setJobs(responseData.content);
         } else if (Array.isArray(responseData)) {
-          // This is the jobs list response (fallback)
+          // Fallback for legacy array format
           setJobs(responseData);
+        } else {
+          setJobs([]);
         }
       } else {
         setError('Failed to fetch jobs');
@@ -209,6 +181,19 @@ function Trabajo() {
       });
       
       if (response.ok) {
+        const responseData = await response.json();
+        
+        // Display results from stopping the job based on new schema
+        if (responseData.message) {
+          console.log('Job completed:', responseData.message);
+          console.log('Job:', responseData.jobName);
+          console.log('Worked time:', responseData.workedTime);
+          console.log('Experience gained:', responseData.experienceGained);
+          console.log('Gold gained:', responseData.goldGained);
+          console.log('Level ups:', responseData.levelUps);
+          console.log('Items gained:', responseData.itemsGained);
+        }
+        
         // Clear working state
         setIsWorking(false);
         setWorkingUntil(null);
@@ -328,13 +313,17 @@ function Trabajo() {
             <p>No jobs available at the moment.</p>
           ) : (
             jobs.map(job => (
-              <div key={job.id} className="job-item">
-                <h3>{job.title || job.name || `Job ${job.id}`}</h3>
-                <p>{job.description || 'No description available'}</p>
-                <p><strong>Payment:</strong> {job.payment || job.reward || 'Not specified'}</p>
+              <div key={job.jobId} className="job-item">
+                <h3>{job.jobName || `Job ${job.jobId}`}</h3>
+                <div className="job-details">
+                  <p><strong>Working Time:</strong> {job.workingTime} minutes</p>
+                  <p><strong>Experience:</strong> {job.experience}</p>
+                  <p><strong>Gold:</strong> {job.gold}</p>
+                  {job.premium && <p><strong>Premium Job</strong></p>}
+                </div>
                 <form onSubmit={(e) => {
                   e.preventDefault();
-                  startJob(job.id);
+                  startJob(job.jobId);
                 }} className="job-form">
                   <button type="submit" className="start-job-btn">
                     Start Working
